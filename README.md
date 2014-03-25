@@ -7,7 +7,7 @@ Older versions could be published as well.
 
 Simple usage example (windows):
 
-    <plugin>
+	<plugin>
 		<artifactId>maven-dependency-plugin</artifactId>
 		<version>2.6</version>
 		<executions>
@@ -36,7 +36,11 @@ Simple usage example (windows):
 
 Complex usage example (let the build choose the platform):
 
-    <profiles>
+	<properties>
+		<postgresql-dist.version>9.3.4</postgresql-dist.version>
+	</properties>
+
+	<profiles>
 		<profile>
 			<id>linux-x86</id>
 			<activation>
@@ -103,107 +107,39 @@ Complex usage example (let the build choose the platform):
 				<postgresql-dist.type>zip</postgresql-dist.type>
 			</properties>
 		</profile>
-		<profile>
-			<id>linux</id>
-			<activation>
-				<os>
-					<family>unix</family>
-					<name>Linux</name>
-				</os>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.6</version>
-						<executions>
-							<execution>
-								<id>copy-postgresql-linux</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<skip>${skipITs}</skip>
-									<artifactItems>
-										<artifactItem>
-											<groupId>com.github.adrianboimvaser</groupId>
-											<artifactId>postgresql-dist</artifactId>
-											<classifier>${postgresql-dist.classifier}</classifier>
-											<version>9.2.4</version>
-											<type>${postgresql-dist.type}</type>
-											<overWrite>true</overWrite>
-											<outputDirectory>${project.build.directory}</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.2.1</version>
-						<executions>
-							<execution>
-								<id>unzip-postgresql-linux</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-								<configuration>
-									<skip>${skipITs}</skip>
-									<executable>tar</executable>
-									<arguments>
-										<argument>-zxvf</argument>
-										<argument>${project.build.directory}/postgresql-dist-9.2.4-1-${postgresql-dist.classifier}.${postgresql-dist.type}</argument>
-										<argument>-C</argument>
-										<argument>${project.build.directory}</argument>
-									</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>windows</id>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>2.6</version>
-						<executions>
-							<execution>
-								<id>unpack-postgresql-windows</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>unpack</goal>
-								</goals>
-								<configuration>
-									<skip>${skipITs}</skip>
-									<artifactItems>
-										<artifactItem>
-											<groupId>com.github.adrianboimvaser</groupId>
-											<artifactId>postgresql-dist</artifactId>
-											<classifier>${postgresql-dist.classifier}</classifier>
-											<version>9.2.4</version>
-											<type>${postgresql-dist.type}</type>
-											<overWrite>true</overWrite>
-											<outputDirectory>${project.build.directory}</outputDirectory>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
+	
+	<build>
+		<plugins>
+			...
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>unpack-postgresql</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<skip>${skipITs}</skip>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.github.adrianboimvaser</groupId>
+									<artifactId>postgresql-dist</artifactId>
+									<classifier>${postgresql-dist.classifier}</classifier>
+									<version>${postgresql-dist.version}</version>
+									<type>${postgresql-dist.type}</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			...
+		</plugins>
+	</build>
+	

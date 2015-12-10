@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.adrianboimvaser</groupId>
     <artifactId>postgresql-dist</artifactId>
-    <version>9.4.5-dhatim</version>
+    <version>9.4.5-3-dhatim</version>
     <packaging>pom</packaging>
     <name>PostgreSQL</name>
     <description>The world's most advanced open source database</description>
